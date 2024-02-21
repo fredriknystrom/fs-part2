@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import Person from './components/Person'
 import PersonForm from './components/PersonForm'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -21,7 +22,12 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1
       }
-      setPersons(persons.concat(newPerson))
+
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
       setNewName("")
       setNewNumber("")
     }
@@ -44,17 +50,14 @@ const App = () => {
   }
 
   const filteredPersons = newSearch.length === 0 ? persons : persons.filter(person => person.name.toLowerCase().startsWith(newSearch.toLowerCase()))
-  
+
   useEffect(() => {
-    console.log('effect')
-  
-    const eventHandler = response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    }
-  
-    const promise = axios.get('http://localhost:3001/persons')
-    promise.then(eventHandler)
+    personService
+      .getAll()
+      .then(initPersons => {
+        console.log(initPersons)
+        setPersons(initPersons)
+      })
   }, [])
 
   return (
