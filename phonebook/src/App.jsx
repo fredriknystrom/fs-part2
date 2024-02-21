@@ -53,7 +53,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter newSearch={newSearch} handleSearch={handleSearch}/>
-      <h2>Phonebook</h2>
+      <h2>add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName} handleNewName={handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
       <h2>Numbers</h2>
       {filteredPersons.map(person =>
