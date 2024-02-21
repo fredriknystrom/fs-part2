@@ -9,6 +9,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [message, setMessage] = useState('')
+  const [visible, setVisible] = useState(false)
 
   const updateNumber = () => {
     const person = persons.find(p => p.name === newName)
@@ -26,6 +28,7 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       if(confirm(`${newName} is already added to phonebook, do you want to replace the old number with a new one?`)) {
         updateNumber()
+        showMessage(`Changed number ${newNumber}`)
       }
     } else {
       const newPerson = {
@@ -37,6 +40,7 @@ const App = () => {
         .create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          showMessage(`Added ${newName}`)
         })
       setNewName("")
       setNewNumber("")
@@ -77,9 +81,21 @@ const App = () => {
     }
   }
 
+  const showMessage = (text) => {
+    setVisible(true)
+    setMessage(text);
+
+    // Hide message after 3 seconds (3000 milliseconds)
+    setTimeout(() => {
+      setVisible(false)
+      setMessage("");
+    }, 3000);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
+      {visible && <p className='infoMessage'>{message}</p>}
       <Filter newSearch={newSearch} handleSearch={handleSearch}/>
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName} handleNewName={handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
