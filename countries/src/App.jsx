@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
-
+import ShowCountry from './components/ShowCountry';
+import CountryInfo from './components/CountryInfo';
 
 const App = () => {
   const [countrySearch, setCountrySearch] = useState('');
@@ -32,6 +32,10 @@ const App = () => {
     setCountrySearch(event.target.value)
   }
 
+  const setNewSearch = (name) => {
+    setCountrySearch(name)
+  }
+
   return (
     <div>
       <form>
@@ -43,21 +47,10 @@ const App = () => {
       <div>
         {message && <p>{message}</p>}
         {countries.length === 1 ? (
-          <div>
-            <h2>{countries[0].name.common}</h2>
-            <p>capital: {countries[0].capital}</p>
-            <p>area: {countries[0].area}</p>
-            <p>languages:</p>
-            <ul>
-              {Object.values(countries[0].languages).map(language => (
-                <li key={language}>{language}</li> // Assuming language names are unique
-              ))}
-            </ul>
-            <img src={countries[0].flags.svg} alt={`Flag of ${countries[0].name.common}`} width="100" />
-          </div>
+          <CountryInfo country={countries[0]}/>
         ) : (
           countries.map(country => (
-            <div key={country.name.common}>{country.name.common}</div>
+            <ShowCountry key={country.name.common} country={country} setNewSearch={setNewSearch}/>
           ))
         )}
       </div>
