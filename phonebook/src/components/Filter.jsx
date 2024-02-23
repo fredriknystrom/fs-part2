@@ -2,7 +2,7 @@ const Filter = (props) => {
     return(
       <form>
         <div>
-          filter shown with: 
+          Filter shown with: 
           <input 
             value={props.newSearch}
             onChange={props.handleSearch}
