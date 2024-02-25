@@ -21,6 +21,11 @@ const App = () => {
       .then(returnedPerson => {
         setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
       })
+      .catch(error => {
+        const errorMessage = error.response.data.error
+        console.log(errorMessage)
+        showMessage(errorMessage)
+      })
   }
 
   const addPerson = (event) => {
