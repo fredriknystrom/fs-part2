@@ -10,6 +10,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
   const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState('');
   const [visible, setVisible] = useState(false)
 
   const updateNumber = () => {
@@ -24,7 +25,7 @@ const App = () => {
       .catch(error => {
         const errorMessage = error.response.data.error
         console.log(errorMessage)
-        showMessage(errorMessage)
+        showMessage(errorMessage, "error")
       })
   }
 
@@ -33,7 +34,7 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       if(confirm(`${newName} is already added to phonebook, do you want to replace the old number with a new one?`)) {
         updateNumber()
-        showMessage(`Changed number ${newNumber}`)
+        showMessage(`Changed number ${newNumber}`, "info")
       }
     } else {
       const newPerson = {
@@ -45,7 +46,12 @@ const App = () => {
         .create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          showMessage(`Added ${newName}`)
+          showMessage(`Added ${newName}`, "info")
+        })
+        .catch(error => {
+          const errorMessage = error.response.data.error
+          console.log(errorMessage)
+          showMessage(errorMessage, "error")
         })
       setNewName("")
       setNewNumber("")
@@ -86,21 +92,27 @@ const App = () => {
     }
   }
 
-  const showMessage = (text) => {
+  const showMessage = (text, type) => {
     setVisible(true)
+    setMessageType(type)
     setMessage(text);
 
     // Hide message after 3 seconds (3000 milliseconds)
     setTimeout(() => {
       setVisible(false)
-      setMessage("");
+      setMessageType("")
+      setMessage("")
+
     }, 3000);
   };
+
+  // Determine the class based on the message type
+  const messageClass = messageType === 'error' ? 'errorMessage' : 'infoMessage'
 
   return (
     <div>
       <h2>Phonebook</h2>
-      {visible && <p className='infoMessage'>{message}</p>}
+      {visible && <p className={messageClass}>{message}</p>}
       <Filter newSearch={newSearch} handleSearch={handleSearch}/>
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName} handleNewName={handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
